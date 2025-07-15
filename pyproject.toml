@@ -18,7 +18,7 @@ select = [
     "F",     # pyflakes
     "FA",    # flake8-future-annotations
     "FBT",   # flake8-boolean-trap
-    "FIX",   # flake8-fixme
+    "FIX",   # flake8
     "FLY",   # flynt
     "G",     # flake8-logging-format
     "I",     # isort
