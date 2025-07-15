@@ -11,3 +11,75 @@ services:
     ports:
       - "9000:9000"
       - "9001:9001"
+
+  # Ceph Monitor
+  ceph-mon:
+    image: quay.io/ceph/ceph:v18.2.7
+    restart: always
+    hostname: ceph-mon
+    volumes:
+      - ./ceph/etc:/etc/ceph
+      - ./ceph/lib:/var/lib/ceph
+      - ./ceph/logs:/var/log/ceph
+    environment:
+      - MON_IP=ceph-mon
+      - CEPH_PUBLIC_NETWORK=172.0.0.0/8
+      - CEPH_DAEMON=mon
+      - CEPH_CLUSTER_NAME=ceph
+    # Удаляем директиву command: mon, так как CEPH_DAEMON=mon уже указывает на запуск монитора
+
+  # Ceph Manager
+  ceph-mgr:
+    image: quay.io/ceph/ceph:v18.2.7
+    restart: always
+    hostname: ceph-mgr
+    volumes:
+      - ./ceph/etc:/etc/ceph
+      - ./ceph/lib:/var/lib/ceph
+      - ./ceph/logs:/var/log/ceph
+    environment:
+      - CEPH_DAEMON=mgr
+      - CEPH_CLUSTER_NAME=ceph
+    depends_on:
+      - ceph-mon
+    ports:
+      - "8443:8443"  # Dashboard port
+      - "8003:8003"  # Prometheus port
+
+  # Ceph Object Storage Daemon (OSD)
+  ceph-osd:
+    image: quay.io/ceph/ceph:v18.2.7
+    restart: always
+    hostname: ceph-osd
+    volumes:
+      - ./ceph/etc:/etc/ceph
+      - ./ceph/lib:/var/lib/ceph
+      - ./ceph/osd:/var/lib/ceph/osd
+      - ./ceph/logs:/var/log/ceph
+    environment:
+      - CEPH_DAEMON=osd
+      - CEPH_CLUSTER_NAME=ceph
+      - OSD_DEVICE=/dev/ceph-osd-data
+      - OSD_TYPE=directory
+      - OSD_BLUESTORE=1
+    depends_on:
+      - ceph-mon
+
+  # Ceph RadosGW (Object Storage)
+  ceph-rgw:
+    image: quay.io/ceph/ceph:v18.2.7
+    restart: always
+    hostname: ceph-rgw
+    volumes:
+      - ./ceph/etc:/etc/ceph
+      - ./ceph/lib:/var/lib/ceph
+      - ./ceph/logs:/var/log/ceph
+    environment:
+      - CEPH_DAEMON=rgw
+      - CEPH_CLUSTER_NAME=ceph
+      - RGW_NAME=ceph-rgw
+    depends_on:
+      - ceph-mon
+      - ceph-mgr
+    ports:
+      - "7480:7480"  # RadosGW port
