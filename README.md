@@ -1,0 +1,2 @@
+# pet_project_s3_as_standart
+pet_project_s3_as_standart
