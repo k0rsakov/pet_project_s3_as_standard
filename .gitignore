@@ -209,3 +209,5 @@ __marimo__/
 # Project
 data
 ceph
+cred.py
+/poetry.lock

@@ -138,9 +138,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
 python = ">=3.12.1,<3.13"
-ruff = "^0.8.4"
+ruff = "0.12.3"
 # Добавленные зависимости
-Faker = "37.3.0"
 pandas = "2.2.3"
-SQLAlchemy = "2.0.41"
-psycopg2 = "2.9.10"
+minio = "7.2.15"
+boto3 = "1.39.6"
