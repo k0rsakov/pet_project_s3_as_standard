@@ -78,6 +78,7 @@ ignore = [
     "PD901",
     # Checks for ambiguous Unicode characters in comments.
     "RUF001", "RUF002", "RUF003",
+    "INP001"
 ]
 
 # Allow autofix for all enabled rules (when `--fix`) is provided.
