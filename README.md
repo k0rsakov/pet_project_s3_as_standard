@@ -13,6 +13,19 @@ poetry lock && \
 poetry install
 ```
 
+### Добавление новых зависимостей в окружение
+
+```bash
+poetry lock && \
+poetry install
+```
+
+### Добавление зависимости в pyproject.toml
+
+```bash
+poetry add <package_name>=<version>
+```
+
 
 ## Разворачивание инфраструктуры
 
