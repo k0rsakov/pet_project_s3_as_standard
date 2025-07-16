@@ -82,7 +82,7 @@ def minio_list_buckets(conn_params: dict) -> None:
     """
     client = minio_client(conn_params)
     buckets = client.list_buckets()
-    print("Buckets (minio):")
+    print("With Minio client; Buckets (minio):")
     for bucket in buckets:
         print(bucket.name, bucket.creation_date)
 
@@ -99,9 +99,9 @@ def minio_create_bucket(conn_params: dict, bucket_name: str) -> None:
     found = client.bucket_exists(bucket_name)
     if not found:
         client.make_bucket(bucket_name)
-        print(f"Bucket '{bucket_name}' created!")
+        print(f"With Minio client; Bucket '{bucket_name}' created!")
     else:
-        print(f"Bucket '{bucket_name}' already exists.")
+        print(f"With Minio client; Bucket '{bucket_name}' already exists.")
 
 
 def minio_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file_path: str) -> None:
@@ -120,7 +120,7 @@ def minio_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file
         object_name=object_name,
         file_path=file_path,
     )
-    print(f"Uploaded {object_name} to {bucket_name} (etag: {result.etag})")
+    print(f"With Minio client; Uploaded {object_name} to {bucket_name} (etag: {result.etag})")
 
 
 def minio_list_objects(conn_params: dict, bucket_name: str) -> None:
@@ -132,7 +132,7 @@ def minio_list_objects(conn_params: dict, bucket_name: str) -> None:
     :return: Ничего.
     """
     client = minio_client(conn_params)
-    print(f"Objects in bucket '{bucket_name}':")
+    print(f"With Minio client; Objects in bucket '{bucket_name}':")
     for obj in client.list_objects(bucket_name):
         print(obj.object_name, obj.size, obj.last_modified)
 
@@ -166,7 +166,7 @@ def boto3_list_buckets(conn_params: dict) -> None:
     """
     s3 = boto3_client(conn_params)
     resp = s3.list_buckets()
-    print("Buckets (boto3):")
+    print("With Boto3 client; Buckets (boto3):")
     for bucket in resp.get("Buckets", []):
         print(bucket["Name"], bucket["CreationDate"])
 
@@ -186,11 +186,11 @@ def boto3_create_bucket(conn_params: dict, bucket_name: str) -> None:
         if conn_params.get("region") and conn_params.get("region") != "us-east-1":
             params["CreateBucketConfiguration"] = {"LocationConstraint": conn_params["region"]}
         s3.create_bucket(**params)
-        print(f"Bucket '{bucket_name}' created!")
+        print(f"With Boto3 client; Bucket '{bucket_name}' created!")
     except s3.exceptions.BucketAlreadyOwnedByYou:
-        print(f"Bucket '{bucket_name}' already exists.")
+        print(f"With Boto3 client; Bucket '{bucket_name}' already exists.")
     except Exception as e:  # noqa: BLE001
-        print(f"Error creating bucket: {e}")
+        print(f"With Boto3 client; Error creating bucket: {e}")
 
 
 def boto3_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file_path: str) -> None:
@@ -205,7 +205,7 @@ def boto3_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file
     """
     s3 = boto3_client(conn_params)
     s3.upload_file(file_path, bucket_name, object_name)
-    print(f"Uploaded {object_name} to {bucket_name}")
+    print(f"With Boto3 client; Uploaded {object_name} to {bucket_name}")
 
 
 def boto3_list_objects(conn_params: dict, bucket_name: str) -> None:
@@ -218,6 +218,6 @@ def boto3_list_objects(conn_params: dict, bucket_name: str) -> None:
     """
     s3 = boto3_client(conn_params)
     resp = s3.list_objects_v2(Bucket=bucket_name)
-    print(f"Objects in bucket '{bucket_name}':")
+    print(f"With Boto3 client; Objects in bucket '{bucket_name}':")
     for obj in resp.get("Contents", []):
         print(obj["Key"], obj["Size"], obj["LastModified"])
