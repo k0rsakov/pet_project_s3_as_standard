@@ -32,3 +32,9 @@ poetry add <package_name>=<version>
 ```bash
 docker-compose up -d
 ```
+
+## Получение файла для загрузки в S3
+
+```bash
+curl -LfO https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv 
+```
