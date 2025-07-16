@@ -82,7 +82,7 @@ def minio_list_buckets(conn_params: dict) -> None:
     """
     client = minio_client(conn_params)
     buckets = client.list_buckets()
-    print(f"With Minio client; Buckets (minio) in {conn_params}:")
+    print(f"With Minio client; Buckets (minio):")
     for bucket in buckets:
         print(bucket.name, bucket.creation_date)
 
