@@ -1,4 +1,4 @@
-from s3_utils import S3_CONFIGS, minio_list_buckets, boto3_list_buckets, minio_create_bucket, boto3_create_bucket
+from s3_utils import S3_CONFIGS, boto3_list_buckets, minio_list_buckets
 
 # Например, для MinIO:
 minio_list_buckets(S3_CONFIGS["aws"])

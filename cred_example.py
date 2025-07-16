@@ -1,4 +1,4 @@
-s3_vk_bucket_name=""  # noqa: INP001
+s3_vk_bucket_name=""
 s3_vk_endpoint="hb.ru-msk.vkcloud-storage.ru"
 s3_vk_access=""
 s3_vk_secret=""

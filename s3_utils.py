@@ -1,12 +1,25 @@
-from minio import Minio
+
 import boto3
 from botocore.client import Config
-import logging
+from minio import Minio
+
 from cred import (
-    s3_minio_endpoint, s3_minio_access_key, s3_minio_secret_key, s3_minio_bucket_name,
-    s3_selectel_endpoint, s3_selectel_access, s3_selectel_secret, s3_selectel_bucket_name,
-    s3_vk_endpoint, s3_vk_access, s3_vk_secret, s3_vk_bucket_name,
-    s3_aws_endpoint, s3_aws_access_key, s3_aws_secret_key, s3_aws_bucket_name
+    s3_aws_access_key,
+    s3_aws_bucket_name,
+    s3_aws_endpoint,
+    s3_aws_secret_key,
+    s3_minio_access_key,
+    s3_minio_bucket_name,
+    s3_minio_endpoint,
+    s3_minio_secret_key,
+    s3_selectel_access,
+    s3_selectel_bucket_name,
+    s3_selectel_endpoint,
+    s3_selectel_secret,
+    s3_vk_access,
+    s3_vk_bucket_name,
+    s3_vk_endpoint,
+    s3_vk_secret,
 )
 
 # Универсальные словари для подключения (можно расширять!)
@@ -17,7 +30,7 @@ S3_CONFIGS = {
         "secret_key": s3_minio_secret_key,
         "bucket": s3_minio_bucket_name,
         "secure": False,  # локально часто http
-        "region": None
+        "region": None,
     },
     "selectel": {
         "endpoint": s3_selectel_endpoint,
@@ -25,7 +38,7 @@ S3_CONFIGS = {
         "secret_key": s3_selectel_secret,
         "bucket": s3_selectel_bucket_name,
         "secure": True,
-        "region": None
+        "region": None,
     },
     "vk": {
         "endpoint": s3_vk_endpoint,
@@ -33,7 +46,7 @@ S3_CONFIGS = {
         "secret_key": s3_vk_secret,
         "bucket": s3_vk_bucket_name,
         "secure": True,
-        "region": None
+        "region": None,
     },
     "aws": {
         "endpoint": s3_aws_endpoint,
@@ -41,18 +54,18 @@ S3_CONFIGS = {
         "secret_key": s3_aws_secret_key,
         "bucket": s3_aws_bucket_name,
         "secure": True,
-        "region": "us-east-1"
-    }
+        "region": "us-east-1",
+    },
 }
 
 # ----------- MINIO FUNCTIONS --------------
 
 def minio_client(conn_params: dict):
     return Minio(
-        endpoint=conn_params['endpoint'],
-        access_key=conn_params['access_key'],
-        secret_key=conn_params['secret_key'],
-        secure=conn_params.get('secure', True)
+        endpoint=conn_params["endpoint"],
+        access_key=conn_params["access_key"],
+        secret_key=conn_params["secret_key"],
+        secure=conn_params.get("secure", True),
     )
 
 def minio_list_buckets(conn_params: dict):
@@ -76,7 +89,7 @@ def minio_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file
     result = client.fput_object(
         bucket_name=bucket_name,
         object_name=object_name,
-        file_path=file_path
+        file_path=file_path,
     )
     print(f"Uploaded {object_name} to {bucket_name} (etag: {result.etag})")
 
@@ -91,12 +104,12 @@ def minio_list_objects(conn_params: dict, bucket_name: str):
 def boto3_client(conn_params: dict):
     session = boto3.session.Session()
     return session.client(
-        service_name='s3',
-        aws_access_key_id=conn_params['access_key'],
-        aws_secret_access_key=conn_params['secret_key'],
+        service_name="s3",
+        aws_access_key_id=conn_params["access_key"],
+        aws_secret_access_key=conn_params["secret_key"],
         endpoint_url=f"https://{conn_params['endpoint']}" if conn_params.get("secure", True) else f"http://{conn_params['endpoint']}",
         region_name=conn_params.get("region"),
-        config=Config(signature_version='s3v4')
+        config=Config(signature_version="s3v4"),
     )
 
 def boto3_list_buckets(conn_params: dict):
@@ -104,7 +117,7 @@ def boto3_list_buckets(conn_params: dict):
     resp = s3.list_buckets()
     print("Buckets (boto3):")
     for bucket in resp.get("Buckets", []):
-        print(bucket['Name'], bucket['CreationDate'])
+        print(bucket["Name"], bucket["CreationDate"])
 
 def boto3_create_bucket(conn_params: dict, bucket_name: str):
     s3 = boto3_client(conn_params)
