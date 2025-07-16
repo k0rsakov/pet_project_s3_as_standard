@@ -122,6 +122,7 @@ def minio_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file
     )
     print(f"Uploaded {object_name} to {bucket_name} (etag: {result.etag})")
 
+
 def minio_list_objects(conn_params: dict, bucket_name: str) -> None:
     """
     Ручка для просмотра содержимого бакета.
@@ -144,11 +145,13 @@ def boto3_client(conn_params: dict) -> boto3.client:
     :return: Клиент S3 (boto3).
     """
     session = boto3.session.Session()
+    url = f"https://{conn_params['endpoint']}" \
+        if conn_params.get("secure", True) else f"http://{conn_params['endpoint']}"
     return session.client(
         service_name="s3",
         aws_access_key_id=conn_params["access_key"],
         aws_secret_access_key=conn_params["secret_key"],
-        endpoint_url=f"https://{conn_params['endpoint']}" if conn_params.get("secure", True) else f"http://{conn_params['endpoint']}",
+        endpoint_url=url,
         region_name=conn_params.get("region"),
         config=Config(signature_version="s3v4"),
     )
@@ -168,6 +171,7 @@ def boto3_list_buckets(conn_params: dict) -> None:
         print(bucket["Name"], bucket["CreationDate"])
 
 
+# noinspection PyTypeChecker
 def boto3_create_bucket(conn_params: dict, bucket_name: str) -> None:
     """
     Ручка для создания бакета.
