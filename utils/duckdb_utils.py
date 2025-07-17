@@ -60,5 +60,5 @@ def duckdb_read_csv_from_s3(conn_params: dict, bucket_name: str, object_name: st
         """,
     ).df()
     con.close()
+    print(f"CSV read from s3://{bucket_name}/{object_name} in {conn_params['target']}:")
     print(df.head())
-    print(f"CSV read from s3://{bucket_name}/{object_name} in {conn_params['target']}")
