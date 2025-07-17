@@ -1,6 +1,7 @@
 import boto3
 from botocore.client import Config
 from minio import Minio
+from minio.error import InvalidResponseError, S3Error
 
 from cred import (
     s3_aws_access_key,
@@ -100,12 +101,19 @@ def minio_create_bucket(conn_params: dict, bucket_name: str) -> None:
     :return: Ничего.
     """
     client = minio_client(conn_params)
-    found = client.bucket_exists(bucket_name)
-    if not found:
+    try:
         client.make_bucket(bucket_name)
         print(f"🦩 With Minio client; Bucket '{bucket_name}' created in {conn_params['target']}!")
-    else:
-        print(f"🦩 With Minio client; Bucket '{bucket_name}' already exists in {conn_params['target']}.")
+    except (S3Error, InvalidResponseError) as exc:
+        msg = str(exc)
+        if (
+            (hasattr(exc, "code") and getattr(exc, "code", None) in ("BucketAlreadyOwnedByYou", "BucketAlreadyExists"))
+            or "BucketAlreadyOwnedByYou" in msg
+            or "BucketAlreadyExists" in msg
+        ):
+            print(f"🦩 With Minio client; Bucket '{bucket_name}' already exists in {conn_params['target']}.")
+        else:
+            print(f"🦩 With Minio client; Error creating bucket '{bucket_name}' in {conn_params['target']}: {exc}")
 
 
 def minio_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file_path: str) -> None:
