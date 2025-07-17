@@ -209,6 +209,7 @@ def boto3_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file
     :return: Ничего.
     """
     if conn_params.get("target") == "vk":
+        # VK Cloud лучше работает с Minio клиентом
         minio_upload_csv(
             conn_params=conn_params,
             bucket_name=bucket_name,
