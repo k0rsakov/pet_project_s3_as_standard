@@ -1,4 +1,4 @@
-from s3_utils import S3_CONFIGS, boto3_list_objects, minio_list_objects
+from utils.s3_utils import S3_CONFIGS, boto3_list_objects, minio_list_objects
 
 minio_list_objects(conn_params=S3_CONFIGS["minio"], bucket_name=S3_CONFIGS["minio"]["bucket"])
 boto3_list_objects(conn_params=S3_CONFIGS["minio"], bucket_name=S3_CONFIGS["minio"]["bucket"])

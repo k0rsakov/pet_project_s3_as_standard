@@ -1,4 +1,4 @@
-from s3_utils import S3_CONFIGS, boto3_create_bucket, boto3_remove_bucket, minio_create_bucket, minio_remove_bucket
+from utils.s3_utils import S3_CONFIGS, boto3_create_bucket, boto3_remove_bucket, minio_create_bucket, minio_remove_bucket
 
 # Для создания бакета:
 bucket_name = "korsakov-test-s3-as-standard-from-api"

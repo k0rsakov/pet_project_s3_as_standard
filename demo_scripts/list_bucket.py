@@ -1,4 +1,4 @@
-from s3_utils import S3_CONFIGS, boto3_list_buckets, minio_list_buckets
+from utils.s3_utils import S3_CONFIGS, boto3_list_buckets, minio_list_buckets
 
 minio_list_buckets(conn_params=S3_CONFIGS["minio"])
 boto3_list_buckets(conn_params=S3_CONFIGS["minio"])
