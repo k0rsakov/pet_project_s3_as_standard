@@ -32,7 +32,7 @@ minio_upload_csv(
     object_name="titanic_minio_client.csv",
     file_path="titanic.csv",
 )
-boto3_upload_csv(
+minio_upload_csv(
     conn_params=S3_CONFIGS["vk"],
     bucket_name=S3_CONFIGS["vk"]["bucket"],
     object_name="titanic_boto3_client.csv",

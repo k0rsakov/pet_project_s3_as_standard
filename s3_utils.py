@@ -110,12 +110,12 @@ def minio_create_bucket(conn_params: dict, bucket_name: str) -> None:
 
 def minio_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file_path: str) -> None:
     """
-    Ручка для загрузки файла в бакет.
+    Ручка для загрузки файла в бакет.
 
     :param conn_params: Параметры подключения.
     :param bucket_name: Имя бакета.
-    :param object_name: Имя файла в бакете.
-    :param file_path: Имя файла на диске.
+    :param object_name: Имя файла в бакете.
+    :param file_path: Имя файла на диске.
     :return: Ничего.
     """
     client = minio_client(conn_params)
@@ -208,9 +208,17 @@ def boto3_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file
     :param file_path: Имя файла на диске.
     :return: Ничего.
     """
-    s3 = boto3_client(conn_params)
-    s3.upload_file(file_path, bucket_name, object_name)
-    print(f"🪣 With Boto3 client; Uploaded {object_name} to {bucket_name} in {conn_params['target']}")
+    if conn_params.get("target") == "vk":
+        minio_upload_csv(
+            conn_params=conn_params,
+            bucket_name=bucket_name,
+            object_name=object_name,
+            file_path=file_path,
+        )
+    else:
+        s3 = boto3_client(conn_params)
+        s3.upload_file(file_path, bucket_name, object_name)
+        print(f"🪣 With Boto3 client; Uploaded {object_name} to {bucket_name} in {conn_params['target']}")
 
 
 def boto3_list_objects(conn_params: dict, bucket_name: str) -> None:
