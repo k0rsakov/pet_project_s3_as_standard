@@ -29,7 +29,7 @@ def duckdb_create_csv_to_s3(conn_params: dict, bucket_name: str, object_name: st
         """,
     )
     con.close()
-    print(f"CSV written to s3://{bucket_name}/{object_name}")
+    print(f"CSV written to s3://{bucket_name}/{object_name} in {conn_params['target']}")
 
 
 def duckdb_read_csv_from_s3(conn_params: dict, bucket_name: str, object_name: str = "file.csv") -> None:
@@ -61,4 +61,4 @@ def duckdb_read_csv_from_s3(conn_params: dict, bucket_name: str, object_name: st
     ).df()
     con.close()
     print(df.head())
-    print(f"CSV read from s3://{bucket_name}/{object_name}")
+    print(f"CSV read from s3://{bucket_name}/{object_name} in {conn_params['target']}")
