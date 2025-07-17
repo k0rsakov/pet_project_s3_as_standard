@@ -1,10 +1,12 @@
 import pandas as pd
 
 
+# noinspection PyTypeChecker
 def pandas_read_csv_from_s3(
     conn_params: dict,
     bucket_name: str,
     file_name: str = "pandas_to_s3.csv",
+    compression: str = "gzip",
 ) -> None:
     """
     Ручка для чтения CSV-файла из S3 в pandas DataFrame.
@@ -12,6 +14,7 @@ def pandas_read_csv_from_s3(
     :param conn_params: Параметры подключения.
     :param bucket_name: Имя бакета.
     :param file_name: Имя файла в бакете.
+    :param compression: Компрессия.
     :return: Ничего (печатает head DataFrame).
     """
     protocol = "https" if conn_params.get("secure", True) else "http"
@@ -29,6 +32,7 @@ def pandas_read_csv_from_s3(
     df = pd.read_csv(
         filepath_or_buffer=s3_path,
         storage_options=storage_options,
+        compression=compression,
     )
     print(f"📖 With pandas; Read CSV from {s3_path} in {conn_params['target']}:")
     print(df.head())
