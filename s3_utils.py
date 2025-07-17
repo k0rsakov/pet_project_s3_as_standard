@@ -116,6 +116,29 @@ def minio_create_bucket(conn_params: dict, bucket_name: str) -> None:
             print(f"🦩 With Minio client; Error creating bucket '{bucket_name}' in {conn_params['target']}: {exc}")
 
 
+def minio_remove_bucket(conn_params: dict, bucket_name: str) -> None:
+    """
+    Ручка для удаления бакета.
+
+    :param conn_params: Параметры подключения.
+    :param bucket_name: Имя бакета.
+    :return: Ничего.
+    """
+    client = minio_client(conn_params)
+    found = client.bucket_exists(bucket_name)
+    if found:
+        # Перед удалением бакет должен быть пустым
+        objects = list(client.list_objects(bucket_name))
+        if objects:
+            print(f"🦩 With Minio client; Bucket '{bucket_name}' is not "
+                  f"empty in {conn_params['target']}. Cannot remove.")
+            return
+        client.remove_bucket(bucket_name)
+        print(f"🦩 With Minio client; Bucket '{bucket_name}' removed from {conn_params['target']}!")
+    else:
+        print(f"🦩 With Minio client; Bucket '{bucket_name}' does not exist in {conn_params['target']}.")
+
+
 def minio_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file_path: str) -> None:
     """
     Ручка для загрузки файла в бакет.
@@ -204,6 +227,27 @@ def boto3_create_bucket(conn_params: dict, bucket_name: str) -> None:
         print(f"🪣 With Boto3 client; Bucket '{bucket_name}' already exists in {conn_params['target']}.")
     except Exception as e:  # noqa: BLE001
         print(f"🪣 With Boto3 client; Error creating bucket: {e} in {conn_params['target']}")
+
+
+def boto3_remove_bucket(conn_params: dict, bucket_name: str) -> None:
+    """
+    Ручка для удаления бакета.
+
+    :param conn_params: Параметры подключения.
+    :param bucket_name: Имя бакета.
+    :return: Ничего.
+    """
+    s3 = boto3_client(conn_params)
+    # Перед удалением бакет должен быть пустым
+    resp = s3.list_objects_v2(Bucket=bucket_name)
+    if "Contents" in resp and len(resp["Contents"]) > 0:
+        print(f"🪣 With Boto3 client; Bucket '{bucket_name}' is not empty in {conn_params['target']}. Cannot remove.")
+        return
+    try:
+        s3.delete_bucket(Bucket=bucket_name)
+        print(f"🪣 With Boto3 client; Bucket '{bucket_name}' removed from {conn_params['target']}!")
+    except Exception as e:  # noqa: BLE001
+        print(f"🪣 With Boto3 client; Error removing bucket: {e} in {conn_params['target']}")
 
 
 def boto3_upload_csv(conn_params: dict, bucket_name: str, object_name: str, file_path: str) -> None:
