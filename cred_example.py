@@ -10,8 +10,8 @@ s3_selectel_secret=""
 
 s3_minio_bucket_name=""
 s3_minio_endpoint="localhost:9000"
-s3_minio_access_key=""
-s3_minio_secret_key=""
+s3_minio_access_key="siloadmin"
+s3_minio_secret_key="siloadmin"  # noqa: S105
 
 s3_aws_bucket_name=""
 s3_aws_endpoint="s3.amazonaws.com"
